@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="미리 컴파일된 헤더">
+      <UniqueIdentifier>{61a60c04-4082-441c-bd98-cfbe2017d2c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{a944b0d1-a65a-4733-a690-bb8450e2717b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\header">
+      <UniqueIdentifier>{e176c21c-841a-48f6-9660-c77545189abf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{b34ae40f-456e-4016-8d04-4d3171132614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\TitleScene">
+      <UniqueIdentifier>{10b3d008-367e-46a9-8379-6510a9d3f9a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Timer">
+      <UniqueIdentifier>{f1350c70-86d8-4b4c-aa16-795f5af71f08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\IndRes">
+      <UniqueIdentifier>{d50fed6f-5b50-4c69-ac36-cfa45857e9ab}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Win32.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx\stdafx.h">
+      <Filter>미리 컴파일된 헤더</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx\SystemDefine.h">
+      <Filter>미리 컴파일된 헤더</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Framework.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="header\IO.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\LoadD2DBitmap.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\LusWrite.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\MeasureFunctionTimeElapsed.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Picking.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\scroll.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\stringhash.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Vector2D.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\WS_S_Conv.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\D2D_Operator.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\FixValue.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\CreateHwndRenderTarget.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Title\TitleScene.h">
+      <Filter>Scene\TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="header\MakeFullscreen.h">
+      <Filter>헤더 파일\header</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\IndRes\independentdeviceresources.h">
+      <Filter>Framework\IndRes</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Timer\Timer.h">
+      <Filter>Framework\Timer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx\stdafx.cpp">
+      <Filter>미리 컴파일된 헤더</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Framework.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="WinMain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Title\TitleScene.cpp">
+      <Filter>Scene\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\IndRes\IndependentDeviceResources.cpp">
+      <Filter>Framework\IndRes</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Timer\Timer.cpp">
+      <Filter>Framework\Timer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource\Win32.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resource\small.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Resource\Win32.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
