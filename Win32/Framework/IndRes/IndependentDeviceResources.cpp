@@ -63,7 +63,7 @@ bool CDirect3DIndependentDeviceResource::Initialize()
 		return SUCCEEDED(D3D11CreateDevice(
 			  nullptr
 			, D3D_DRIVER_TYPE_NULL			// 실제 하드웨어 장치를 만들 필요가 없습니다.
-			, nullptr
+			, 0
 			, D3D11_CREATE_DEVICE_DEBUG		// SDK 레이어를 확인하세요.
 			, nullptr						// 모든 기능 수준이 적용됩니다.
 			, 0
@@ -102,7 +102,7 @@ bool CDirect3DIndependentDeviceResource::Initialize()
 	{
 		DXGI_ADAPTER_DESC1 desc;
 		ComPtr<IDXGIAdapter1> dxgiAdapter;
-		if (DXGI_ERROR_NOT_FOUND == m_dxgiFactory->EnumAdapters1(adapterIdx, &dxgiAdapter))
+		if (m_dxgiFactory->EnumAdapters1(adapterIdx, &dxgiAdapter) == DXGI_ERROR_NOT_FOUND)
 			break;
 		dxgiAdapter->GetDesc1(&desc);
 		size_t szVideoMemory = static_cast<size_t>(desc.DedicatedVideoMemory + desc.SharedSystemMemory);
@@ -112,7 +112,7 @@ bool CDirect3DIndependentDeviceResource::Initialize()
 			szBestVideoMemory = szVideoMemory;
 			dxgiAdapter.As(&m_dxgiAdapter);
 			// Debug view
-			wstring strDebug = wstring { desc.Description } + L", "s + FixValue(szBestVideoMemory / 1024 / 1024) + L" MB"s;
+			wstring strDebug = desc.Description + L", "s + FixValue(szBestVideoMemory / 1024 / 1024) + L" MB"s;
 		//	MessageBox(nullptr, strDebug.c_str(), L"GPU Info", MB_OK);
 		}
 		++adapterIdx;
@@ -146,7 +146,7 @@ bool CDirect3DIndependentDeviceResource::Initialize()
 	}
 	else
 	{
-		for (auto&& idxDreiverType : d3dDriverTypes)
+		for (D3D_DRIVER_TYPE &idxDreiverType : d3dDriverTypes)
 		{
 			hResult = D3D11CreateDevice(
 				  nullptr					// 기본 어댑터를 사용하려면 nullptr을 지정합니다.
@@ -201,7 +201,7 @@ bool CDirect3DIndependentDeviceResource::Initialize()
 		m_dxgiAdapter->GetDesc2(&desc);
 
 		// Debug view MessageBox;
-		wstring strDebug = wstring { desc.Description } + L", "s + FixValue((desc.DedicatedVideoMemory + desc.SharedSystemMemory) / 1024 / 1024) + L" MB"s;
+		wstring strDebug = desc.Description + L", "s + FixValue((desc.DedicatedVideoMemory + desc.SharedSystemMemory) / 1024 / 1024) + L" MB"s;
 //		MessageBox(nullptr, strDebug.c_str(), L"GPU Info", MB_OK);
 
 		// DXGI Factory 인스턴스를 DXGIFactory에서 받습니다.
@@ -291,7 +291,7 @@ ComPtr<IDXGISwapChain> CDirect3DIndependentDeviceResource::CreateSwapChain(HWND 
 	//	DXGI_SWAP_EFFECT_DISCARD		(0) : 버퍼 내용을 폐기
 	//	DXGI_SWAP_EFFECT_SEQUENTIAL		(1) : 순차 복사
 	// DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL	(2) : Flip 순차 복사
-	dxgiSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
+	dxgiSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 	
 	#pragma endregion
 
@@ -325,8 +325,7 @@ ComPtr<ID3D11RenderTargetView> CDirect3DIndependentDeviceResource::CreateRenderT
 	if (FAILED(hResult)) return rtv;
 
 	// 반환받은 버퍼를 사용하여 render target view 를 생성합니다.
-	hResult = m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer.Get(), nullptr, &rtv);
-	if (FAILED(hResult)) return ComPtr <ID3D11RenderTargetView> {};
+	m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer.Get(), nullptr, &rtv);
 
 	return rtv;
 }
@@ -424,6 +423,11 @@ CDirect2DIndependentDeviceResource::CDirect2DIndependentDeviceResource()
 
 CDirect2DIndependentDeviceResource::~CDirect2DIndependentDeviceResource()
 {
+	if (m_bInitializeCoInit)
+	{
+		m_wicFactory = nullptr;
+		::CoUninitialize();
+	}
 }
 
 bool CDirect2DIndependentDeviceResource::Initialize()
@@ -442,7 +446,7 @@ bool CDirect2DIndependentDeviceResource::Initialize()
 #endif
 
 	// Direct2D 팩터리를 초기화합니다.
-	if(FAILED(hResult = D2D1CreateFactory(	  D2D1_FACTORY_TYPE_SINGLE_THREADED
+	if(FAILED(hResult = D2D1CreateFactory(	  D2D1_FACTORY_TYPE_MULTI_THREADED
 											, __uuidof(decltype(m_pd2dFactory)::InterfaceType)
 											, &options
 											, &m_pd2dFactory
@@ -457,6 +461,7 @@ bool CDirect2DIndependentDeviceResource::Initialize()
 	// COM Library를 초기화합니다.
 	// UWP에는 없어도 잘 돌아가더니 여기선 안 돌아가네.
 	if (FAILED(hResult = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED))) goto ReleaseDXGI;
+	m_bInitializeCoInit = true;
 
 	// WIC(Windows Imaging Container) 팩터리를 초기화합니다.
 	if (FAILED(hResult = CoCreateInstance(	  CLSID_WICImagingFactory
@@ -508,7 +513,7 @@ CIndependentDeviceResource::~CIndependentDeviceResource()
 
 bool CIndependentDeviceResource::Initialize()
 {
-	auto retval	=	CDirect3DIndependentDeviceResource::Initialize()
+	bool retval	=	CDirect3DIndependentDeviceResource::Initialize()
 				&&	CDirect2DIndependentDeviceResource::Initialize();
 	if (!retval) return false;
 	

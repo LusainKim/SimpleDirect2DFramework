@@ -34,6 +34,9 @@
     <Filter Include="Framework\IndRes">
       <UniqueIdentifier>{d50fed6f-5b50-4c69-ac36-cfa45857e9ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\InputManager">
+      <UniqueIdentifier>{cf42dd65-9828-40db-9b6f-cecbdda51c3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -108,6 +111,12 @@
     <ClInclude Include="Framework\Timer\Timer.h">
       <Filter>Framework\Timer</Filter>
     </ClInclude>
+    <ClInclude Include="Framework\IndRes\DirectXVersion.h">
+      <Filter>Framework\IndRes</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Input\Input.h">
+      <Filter>Framework\InputManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx\stdafx.cpp">
@@ -130,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="Framework\Timer\Timer.cpp">
       <Filter>Framework\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Input\Input.cpp">
+      <Filter>Framework\InputManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
