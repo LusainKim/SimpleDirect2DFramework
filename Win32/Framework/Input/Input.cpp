@@ -41,7 +41,7 @@ void CInputManager::bind(UCHAR key, CInputManager::Button && btn)
 void CInputManager::bind(UCHAR basekey, CInputManager::Button&& btn, LPCSTR AppName, LPCSTR configPath)
 {
 	auto tag = btn.tag.c_str();
-	return bind(GetPrivateProfileIntA(AppName, tag, basekey, configPath), move(btn));
+	return bind(static_cast<UCHAR>(GetPrivateProfileIntA(AppName, tag, basekey, configPath)), move(btn));
 }
 
 bool CInputManager::replace(string tag, UCHAR newkey)

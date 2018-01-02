@@ -88,14 +88,13 @@ namespace D2DBitmap
 													, WICBitmapPaletteTypeMedianCut
 		))) return false;
 		
-		ID2D1Bitmap* bmp;
+		ComPtr<ID2D1Bitmap> bmp;
 		if (FAILED(pd2dRenderTarget->CreateBitmapFromWicBitmap(	  pwicFormatConverter.Get()
 																, NULL
 																, &bmp
 		))) return false;
 		
-		bmp->QueryInterface(ppd2dBitmap);
-		bmp->Release();
+		bmp.As(ppd2dBitmap);
 
 		return true;
 	}

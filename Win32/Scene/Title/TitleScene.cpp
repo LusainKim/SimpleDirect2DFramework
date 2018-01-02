@@ -51,9 +51,9 @@ void CTitleScene::Draw(ID2D1HwndRenderTarget * pd2dDeviceContext)
 
 void CTitleScene::BindKey()
 {
-	using BTN = CInputManager::Button;
 	using namespace InputManager;
 
 	make_button(move_left);
 	move_left.down_event;
+	m_InputManager->bind(VK_LEFT, move(move_left));
 }

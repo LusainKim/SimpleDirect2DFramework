@@ -1,15 +1,5 @@
 ﻿#pragma once
 
-enum class EBoxFace 
-{
-	  Front
-	, Up
-	, Back
-	, Down
-	, Left
-	, Right
-};
-
 
 
 // xz 평면의 x
@@ -66,15 +56,3 @@ constexpr LONG CLIENT_MINIMUM_HEIGHT = 480;
 
 #define DEBUG_CLIENT_WIDTH	400
 #define DEBUG_CLIENT_HEIGHT	600
-
-#ifdef NEMOLAND_CLIENT
-#if USE_DEBUG_WINDOW
-
-#include "Framework\LogSystem\LogSystem.h"
-
-#endif
-#endif
-
-// Network
-#define	WM_SOCKET				WM_USER + 1 //
-#define	BUF_SIZE				1024 

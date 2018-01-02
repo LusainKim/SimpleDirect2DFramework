@@ -52,6 +52,7 @@ private:
 	constexpr static BYTE GetLowBit(BYTE key) { return key - (GetHighBit(key) << 7); }
 };
 
-namespace InputManager {
+namespace InputManager 
+{
 	#define make_button(name) CInputManager::Button name { #name };
 }

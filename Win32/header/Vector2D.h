@@ -86,3 +86,15 @@ inline bool IsPointInCircle(VecTy1 ptCenter, float fRadius, VecTy2 pt)
 template<typename Vec = POINT>
 constexpr inline bool IsIntersectCircle(Vec pt1, float fRadius1, Vec pt2, float fRadius2) noexcept
 { return{ Vec{ pt1 - pt2 }.Length() <= (fRadius1 + fRadius2) }; }
+
+inline POINT operator+(POINT a, const POINT b) { return POINT { a.x + b.x, a.y + b.y }; }
+inline POINT operator-(POINT a, const POINT b) { return POINT { a.x - b.x, a.y - b.y }; }
+inline POINT operator*(LONG b, POINT a) { return POINT { a.x * b, a.y * b }; }
+inline bool operator==(POINT p1, POINT p2) { return (p1.x == p2.x && p1.y == p2.y) ? true : false; }
+inline bool operator!=(POINT p1, POINT p2) { return (p1.x == p2.x && p1.y == p2.y) ? false : true; }
+
+inline RECT operator+(RECT rc, POINT pt)	{ return RECT{pt.x + rc.left, pt.y + rc.top, pt.x + rc.right, pt.y + rc.bottom}; }
+inline RECT operator-(RECT rc, POINT pt)	{ return RECT{rc.left - pt.x, rc.top - pt.y, rc.right - pt.x, rc.bottom - pt.y}; }
+inline RECT operator+(POINT pt, RECT rc)	{ return RECT{pt.x + rc.left, pt.y + rc.top, pt.x + rc.right, pt.y + rc.bottom}; }
+inline RECT operator+(RECT rc_1, RECT rc_2) { return RECT{rc_1.left + rc_2.left, rc_1.top + rc_2.top, rc_1.right + rc_2.right, rc_1.bottom + rc_2.bottom}; }
+inline RECT operator-(RECT rc_1, RECT rc_2) { return RECT{rc_1.left - rc_2.left, rc_1.top - rc_2.top, rc_1.right - rc_2.right, rc_1.bottom - rc_2.bottom}; }
