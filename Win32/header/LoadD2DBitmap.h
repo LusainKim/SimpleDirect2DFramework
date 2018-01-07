@@ -3,16 +3,16 @@
 
 namespace D2DBitmap
 {
-	template<typename D2DRTV = ID2D1HwndRenderTarget, typename Rect = D2D_RECT_U>
-	inline bool LoadImageFromFile(	  IWICImagingFactory2		*pwicFactory
-									, D2DRTV					*pd2dRenderTarget
+	template<typename Rect = D2D_RECT_U>
+	bool LoadImageFromFile(	  IWICImagingFactory		*pwicFactory
+							, ID2D1RenderTarget			*pd2dRenderTarget
 
-									, LPCTSTR					pszstrFileName
-									, ID2D1Bitmap1				**ppd2dBitmap
-									, Rect						*pd2drcImage  = nullptr
-									, UINT						nWidth		  = 0
-									, UINT						nHeight		  = 0
-									, WICBitmapTransformOptions	nFlipRotation = WICBitmapTransformRotate0
+							, LPCTSTR					pszstrFileName
+							, ID2D1Bitmap1				**ppd2dBitmap
+							, Rect						*pd2drcImage  = nullptr
+							, UINT						nWidth		  = 0
+							, UINT						nHeight		  = 0
+							, WICBitmapTransformOptions	nFlipRotation = WICBitmapTransformRotate0
 	)
 	{
 		ComPtr<IWICBitmapDecoder> pwicBitmapDecoder;
@@ -88,11 +88,14 @@ namespace D2DBitmap
 													, WICBitmapPaletteTypeMedianCut
 		))) return false;
 		
+		ComPtr<ID2D1Bitmap> bmp;
 		if (FAILED(pd2dRenderTarget->CreateBitmapFromWicBitmap(	  pwicFormatConverter.Get()
 																, NULL
-																, ppd2dBitmap
+																, &bmp
 		))) return false;
 		
+		bmp.As(ppd2dBitmap);
+
 		return true;
 	}
 

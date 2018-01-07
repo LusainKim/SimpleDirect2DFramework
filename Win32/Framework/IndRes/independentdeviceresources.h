@@ -1,7 +1,6 @@
 #pragma once
 
-#define USING_D3D11_INDRES	0
-#define USING_D2D1_INDRES	1
+#include "DirectXVersion.h"
 
 //	2017.03.26
 //	설계 방향 :
@@ -78,14 +77,6 @@ public:
 	///	<param name = "pd3dDepthStencilBuffer"> Depth-Stencil Buffer 입니다. </param>
 	ComPtr<ID3D11DepthStencilView> CreateDepthStencilView(ID3D11Texture2D* pd3dDepthStencilBuffer) const;
 
-	// Getter
-public:
-	auto d3dDevice()		const { return m_pd3dDevice.Get(); }
-	auto d3dDeviceContext()	const { return m_pd3dDeviceContext.Get(); }
-
-	auto COM_d3dDevice()		const { return m_pd3dDevice; }
-	auto COM_d3dDeviceContext()	const { return m_pd3dDeviceContext; }
-
 	// Direct3D Resource
 protected:
 
@@ -95,6 +86,12 @@ protected:
 	ComPtr<IDXGIFactory3>			m_dxgiFactory		{ nullptr }	;
 	ComPtr<IDXGIDevice3>			m_dxgiDevice		{ nullptr }	;
 	ComPtr<IDXGIAdapter2>			m_dxgiAdapter		{ nullptr }	;
+
+public:
+
+	const ComPtr<ID3D11Device2>			&	d3dDevice			{ m_pd3dDevice			 }	;
+	const ComPtr<ID3D11DeviceContext2>	&	d3dDeviceContext	{ m_pd3dDeviceContext	 }	;
+
 
 };
 
@@ -110,7 +107,7 @@ protected:
 /// 장치 종속적인 리소스 생성을 간단히 할 함수를 제공합니다.
 ///
 /// 다음 리소스를 생성하고 제공합니다 :
-///		ID2D1Factory
+///		D2D_Factory
 ///		IDIDWriteFactory
 ///		IWICImagingFactory
 ///
@@ -121,13 +118,13 @@ class CDirect2DIndependentDeviceResource
 public:
 
 	CDirect2DIndependentDeviceResource();
-	~CDirect2DIndependentDeviceResource();
+	virtual ~CDirect2DIndependentDeviceResource();
 
 	/// <summary>
 	/// 장치 독립적 디바이스를 생성합니다.
 	/// </summary>
 	///	<param name = "bCreate2DResources"> Direct2D 리소스를 생성할지 결정합니다. 기본값은 true 입니다. </param>
-	bool Initialize();
+	virtual bool Initialize();
 
 	/// <summary>
 	/// 윈도우 핸들에 종속되는 Render Target을 생성합니다.
@@ -135,28 +132,29 @@ public:
 	///	<param name = "bCreate2DResources"> Render Target이 출력할 윈도우 핸들입니다. </param>
 	///	<param name = "prop"> Render Target 속성값입니다. 기본값은 RenderTargetProperties() 입니다. </param>
 	///	<param name = "presentOpt"> Render Target의 출력 옵션입니다. 기본값은 D2D1_PRESENT_OPTIONS_IMMEDIATELY 입니다. </param>
-	ComPtr<ID2D1HwndRenderTarget> CreateHwndRenderTarget(HWND hWnd, D2D1_RENDER_TARGET_PROPERTIES prop = D2D1::RenderTargetProperties(), D2D1_PRESENT_OPTIONS presentOpt = D2D1_PRESENT_OPTIONS_IMMEDIATELY) const;
-
-	// Getter
-public:
-
-	auto d2dFactory()		const { return m_pd2dFactory.Get(); }
-	
-	auto dwFactory()		const { return m_pdwFactory.Get(); }
-	auto wicFactory()		const { return m_wicFactory.Get(); }
-
-	auto COM_d2dFactory()		const { return m_pd2dFactory; }
-
-	auto COM_dwFactory()		const { return m_pdwFactory; }
-	auto COM_wicFactory()		const { return m_wicFactory; }
+	ComPtr<ID2D1HwndRenderTarget> CreateHwndRenderTarget(
+		  HWND hWnd
+		, D2D1_RENDER_TARGET_PROPERTIES prop = D2D1::RenderTargetProperties()
+		, D2D1_PRESENT_OPTIONS presentOpt = D2D1_PRESENT_OPTIONS_IMMEDIATELY
+	) const;
 
 	// Direct2D Resource
 protected:
 
-	ComPtr<ID2D1Factory2>			m_pd2dFactory		{ nullptr }	;
+	ComPtr<D2D_Factory>			m_pd2dFactory		{ nullptr }	;
 
-	ComPtr<IDWriteFactory2>			m_pdwFactory		{ nullptr }	;
-	ComPtr<IWICImagingFactory2>		m_wicFactory		{ nullptr }	;
+	ComPtr<DWT_Factory>			m_pdwFactory		{ nullptr }	;
+	ComPtr<WIC_Factory>		m_wicFactory		{ nullptr }	;
+
+	bool							m_bInitializeCoInit	{ false }	;
+	
+public:
+
+	const ComPtr<D2D_Factory>			&	d2dFactory		{ m_pd2dFactory	 }	;
+
+	const ComPtr<DWT_Factory>		&	dwFactory		{ m_pdwFactory	 }	;
+	const ComPtr<WIC_Factory>	&	wicFactory		{ m_wicFactory	 }	;
+
 };
 
 #endif
@@ -174,7 +172,7 @@ protected:
 ///		ID3D11Device
 ///		ID3D11DeviceContext
 ///
-///		ID2D1Factory
+///		D2D_Factory
 ///		IDIDWriteFactory
 ///		IWICImagingFactory
 ///
@@ -189,7 +187,7 @@ class CIndependentDeviceResource
 public:
 
 	CIndependentDeviceResource();
-	~CIndependentDeviceResource();
+	virtual ~CIndependentDeviceResource();
 
 	/// <summary>
 	/// 장치 독립적 디바이스를 생성합니다.
@@ -220,19 +218,17 @@ public:
 	/// </remarks>
 	ComPtr<ID2D1RenderTarget> GetDirect2DRenderTargetByTexture2D(ComPtr<ID3D11Texture2D> pd3dTexture2D) const;
 
-	// Getter
-public:
-
-	auto d2dDevice()		const { return m_pd2dDevice.Get(); }
-	auto d2dDeviceContext()	const { return m_pd2dDeviceContext.Get(); }
-
-	auto COM_d2dDevice()		const { return m_pd2dDevice; }
-	auto COM_d2dDeviceContext()	const { return m_pd2dDeviceContext; }
 	// Direct2D Resource
 protected:
 
-	ComPtr<ID2D1Device2>			m_pd2dDevice		{ nullptr }	;
-	ComPtr<ID2D1DeviceContext2>		m_pd2dDeviceContext	{ nullptr }	;
+	ComPtr<ID2D1Device1>			m_pd2dDevice		{ nullptr }	;
+	ComPtr<ID2D1DeviceContext>		m_pd2dDeviceContext	{ nullptr }	;
+	
+public:
+	
+	const ComPtr<ID2D1Device1>			&	d2dDevice			{ m_pd2dDevice			}	;
+	const ComPtr<ID2D1DeviceContext>	&	d2dDeviceContext	{ m_pd2dDeviceContext	}	;
+	
 };
 
 #endif

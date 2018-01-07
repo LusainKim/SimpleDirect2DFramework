@@ -55,8 +55,8 @@ inline bool RayIntersectTriangle(	  XMVECTOR xmvOrigin
 /// <remarks> </remarks>
 /// <returns> 이 함수는 생성된 xmvPickRayPosition 과 xmvPickRayDirection 을 반환합니다. </returns>
 inline void GenerateRayForPicking(	  FXMVECTOR xmvPickPosition
-									, XMMATRIX *pxmmtxModel
-									, XMMATRIX *xmmtxView
+									, FXMMATRIX *pxmmtxModel
+									, FXMMATRIX *xmmtxView
 									, XMVECTOR& xmvPickRayPosition
 									, XMVECTOR& xmvPickRayDirection) 
 {
@@ -69,3 +69,37 @@ inline void GenerateRayForPicking(	  FXMVECTOR xmvPickPosition
 	xmvPickRayDirection	= XMVector3TransformCoord(xmvPickPosition, xmmtxInverse);
 	xmvPickRayDirection = XMVector3Normalize(xmvPickRayDirection - xmvPickRayPosition);
 }
+
+#if USING_D3D11_INDRES
+
+/// <summary>
+/// 3D 위치에 있는 점이 최종적으로 화면의 어느 좌표에 그려질 지 계산합니다.
+/// </summary>
+///	<param name = "xmvPosition"> 선택한 위치입니다. </param>
+///	<param name = "xmmtxView"> 현재 카메라의 뷰 행렬입니다 </param>
+///	<param name = "xmmtxProjection"> 현재 카메라의 투영 행렬입니다. </param>
+///	<param name = "d3dViewport"> 3d viewport입니다. 클라이언트 크기와 시작좌표(left, top)이 필요합니다. </param>
+/// <remarks> </remarks>
+/// <returns> 이 함수는 생성된 2D 좌표를 반환합니다. </returns>
+inline D2D_POINT_2F Get2DPointBy3DPosition(	  FXMVECTOR xmvPosition
+											, FXMMATRIX xmmtxView
+											, FXMMATRIX xmmtxProjection
+											, D3D11_VIEWPORT d3dViewport) 
+{
+	XMMATRIX xmmtxPosition = XMMatrixTranslationFromVector(xmvPosition);
+	xmmtxPosition = XMMatrixMultiply(xmmtxPosition, xmmtxView * xmmtxProjection);
+
+	XMVECTOR xmvpos = xmmtxPosition.r[3];
+	xmvpos /= XMVectorGetW(xmvpos);
+	
+	XMFLOAT3 xmfPos;
+	XMStoreFloat3(&xmfPos, xmvpos);
+
+	return 
+	{
+		  (+xmfPos.x + 1.f) * d3dViewport.Width  * 0.5f + d3dViewport.TopLeftX
+		, (-xmfPos.y + 1.f) * d3dViewport.Height * 0.5f + d3dViewport.TopLeftY
+	};
+}
+
+#endif

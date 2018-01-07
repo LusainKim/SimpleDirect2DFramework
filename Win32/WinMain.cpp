@@ -18,7 +18,7 @@ namespace
 	CDirectXFramework fwMain;
 
 	shared_ptr<CTimer> timer;
-	shared_ptr<CDirect2DIndependentDeviceResource> independentRes;
+	shared_ptr<CIndRes> independentRes;
 
 };
 
@@ -207,13 +207,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	{
 		auto pNewScene { make_unique<CTitleScene>() };
 
-		pNewScene->BuildObjects(TEXT("Title"), framework->GetHwnd(), framework);
-		pNewScene->BuildObjecsFromD2D1Devices(independentRes->d2dFactory(), framework->GetRenderTarget(), independentRes->dwFactory(), independentRes->wicFactory());
+		pNewScene->Build("Title"s, framework);
 
 		return pNewScene;
 	});
 
-	fwMain.ChangeScene(TEXT("Title"));
+	fwMain.ChangeScene("Title"s);
 
 	//	윈도우 표시
 	ShowWindow(hWnd, nCmdShow);

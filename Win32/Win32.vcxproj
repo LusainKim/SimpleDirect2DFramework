@@ -154,7 +154,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Framework.h" />
+    <ClInclude Include="Framework\IndRes\DirectXVersion.h" />
     <ClInclude Include="Framework\IndRes\independentdeviceresources.h" />
+    <ClInclude Include="Framework\Input\Input.h" />
     <ClInclude Include="Framework\Timer\Timer.h" />
     <ClInclude Include="header\CreateHwndRenderTarget.h" />
     <ClInclude Include="header\D2D_Operator.h" />
@@ -175,11 +177,14 @@
     <ClInclude Include="stdafx\stdafx.h" />
     <ClInclude Include="stdafx\SystemDefine.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UI\UIBase.h" />
+    <ClInclude Include="UI\UIManager.h" />
     <ClInclude Include="Win32.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework\Framework.cpp" />
     <ClCompile Include="Framework\IndRes\IndependentDeviceResources.cpp" />
+    <ClCompile Include="Framework\Input\Input.cpp" />
     <ClCompile Include="Framework\Timer\Timer.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\Title\TitleScene.cpp" />
@@ -189,6 +194,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UI\UIBase.cpp" />
+    <ClCompile Include="UI\UIManager.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
