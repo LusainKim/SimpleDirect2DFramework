@@ -19,6 +19,10 @@ public:
 
 	virtual void Build(std::string Tag, CDirectXFramework *pMasterWindow) override;
 
+	void BuildHSVPicker();
+
+	void BuildColorPicker();
+
 	virtual void AnimateObjects(float fTimeElapsed) override;
 
 	virtual void Draw(ID2D1HwndRenderTarget*pd2dDeviceContext) override;
@@ -27,5 +31,9 @@ public:
 
 private:
 	float m_fTick{ 0.f };
+	ComPtr<ID2D1Bitmap1> m_pd2dbmpColors;
+	ComPtr<ID2D1Bitmap1> m_pd2dbmpColorsPallet;
+
+	float m_Hvalue = 0.f;
 };
 
