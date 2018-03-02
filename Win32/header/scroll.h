@@ -7,17 +7,7 @@
 //	basic_scroll을 상속한 자식클래스를 이용해서 프로그래밍하세요.
 //---------------------------------------------------------------
 
-#pragma region	 default setting part
-
-#ifndef max
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
-#endif
-
-#ifndef min
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
-#endif
-
-#pragma endregion
+#include <algorithm>
 
 /*
 * 스크롤을 사용하기 위한 기반클래스입니다.
@@ -96,7 +86,7 @@ public:
 			m_flThumb = ThumbLength;
 		else
 		{
-			m_flThumb = max(5, ScrollLength * m_flSrcView / m_flSrc);
+			m_flThumb = std::max(5.f, ScrollLength * m_flSrcView / m_flSrc);
 			if (m_flSrcView / m_flSrc >= 1)
 				m_flThumb = 0;
 		}
