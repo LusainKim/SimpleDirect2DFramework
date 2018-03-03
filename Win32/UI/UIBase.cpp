@@ -52,6 +52,7 @@ void CUIBase::OnPrepareRender(ID2D1RenderTarget * pd2dRenderTarget)
 {
 	GetRelatedDrawableRect();
 
+	pd2dRenderTarget->GetTransform(&m_mtxStoreLast);
 	pd2dRenderTarget->SetTransform(Matrix3x2F::Translation(GetRelatedStartPosition()));
 	pd2dRenderTarget->PushLayer(
 		LayerParameters(
@@ -66,6 +67,12 @@ void CUIBase::OnPrepareRender(ID2D1RenderTarget * pd2dRenderTarget)
 		)
 		, m_pLayer.Get()
 	);
+}
+
+void CUIBase::OnFinishedRender(ID2D1RenderTarget * pd2dRenderTarget) 
+{ 
+	pd2dRenderTarget->PopLayer(); 
+	pd2dRenderTarget->SetTransform(m_mtxStoreLast);
 }
 
 void CUIBase::InitializeCaption(float fHeight, bool bView, bool bMoveable)
@@ -123,6 +130,12 @@ D2D_RECT_F CUIBase::GetRect(UI_PROPERTY prop) const
 	}
 
 	return D2D_RECT_F {};
+}
+
+void CUIBase::Build(std::string Tag, const shared_ptr<CIndRes>& indres, ID2D1RenderTarget* pd2dRenderTarget)
+{
+	m_myTag = Tag;
+	pd2dRenderTarget->CreateLayer(&m_pLayer);
 }
 
 bool CUIBase::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)

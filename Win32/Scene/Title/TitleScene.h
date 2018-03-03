@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Scene/Scene.h"
-
+#include "UI/UIManager.h"
 
 
 class CTitleScene
@@ -21,8 +21,6 @@ public:
 
 	void BuildHSVPicker();
 
-	void BuildColorPicker();
-
 	virtual void AnimateObjects(float fTimeElapsed) override;
 
 	virtual void Draw(ID2D1HwndRenderTarget*pd2dDeviceContext) override;
@@ -31,9 +29,12 @@ public:
 
 private:
 	float m_fTick{ 0.f };
-	ComPtr<ID2D1Bitmap1> m_pd2dbmpColors;
 	ComPtr<ID2D1Bitmap1> m_pd2dbmpColorsPallet;
 
 	float m_Hvalue = 0.f;
+	Notifier<Color>		m_SelectColor{};
+
+	CUIManager			m_uiManager;
+
 };
 

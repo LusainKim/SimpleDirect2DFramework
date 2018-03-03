@@ -21,8 +21,8 @@ public:
 	virtual void RenderCaption(ID2D1RenderTarget* pd2dRenderTarget) {}
 	virtual void RenderResizeBox(ID2D1RenderTarget* pd2dRenderTarget) {}
 	virtual void OnPrepareRender(ID2D1RenderTarget* pd2dRenderTarget);
-	virtual void Render(ID2D1RenderTarget* pd2dRenderTarget) = 0;
-	virtual void OnFinishedRender(ID2D1RenderTarget* pd2dRenderTarget) { pd2dRenderTarget->PopLayer(); }
+	virtual void Draw(ID2D1RenderTarget* pd2dRenderTarget) = 0;
+	virtual void OnFinishedRender(ID2D1RenderTarget* pd2dRenderTarget);
 	virtual void Update(float fTimeElapsed) {}
 
 	void IsRelatedClientSize(bool bTrue) { m_bRelatedClient = bTrue; }
@@ -49,7 +49,7 @@ public:
 			break;
 
 		case UI_PROPERTY::StartPosition:
-			InitializeClinet(std::forward<Args>(args)...);
+			InitializeStartPosition(std::forward<Args>(args)...);
 			break;
 
 		case UI_PROPERTY::Resize:
@@ -105,20 +105,16 @@ public:
 	void SetOpacity(float fOpacity) { m_fOpacity = fOpacity; }
 	float SetOpacity() const { return m_fOpacity; }
 
-	virtual void BuildObject(string_hash hash, ID2D1Factory* pd2dFactory, IDWriteFactory* pdwFactory, IWICImagingFactory* pwicFactory, ID2D1DeviceContext* pd2dDeviceContext) = 0
-	{
-		m_myHash = hash;
-		pd2dDeviceContext->CreateLayer(&m_pLayer);
-	}
+	virtual void Build(std::string Tag, const shared_ptr<CIndRes>& indres, ID2D1RenderTarget* pd2dRenderTarget);
 
-	bool FindByTag(string_hash hash) const { return hash == m_myHash; };
-	string_hash GetTag() const { return m_myHash; }
+	bool FindByTag(std::string hash) const { return hash == m_myTag; };
+	std::string GetTag() const { return m_myTag; }
 	
 protected:
 
 	CUIManager * const			m_pUIManager		{ nullptr }	;
 
-	string_hash					m_myHash			{ }			;
+	std::string					m_myTag				{ }			;
 
 	bool						m_bAbleResize		{ false }	;
 	bool						m_bAbleMove			{ false }	;
@@ -139,6 +135,8 @@ protected:
 	D2D_RECT_F					m_rcResizeBox		{ }			;
 
 	D2D_POINT_2F				m_ptWorld			{ }			;
+
+	D2D_MATRIX_3X2_F			m_mtxStoreLast					;
 
 	// Layer
 	ComPtr<ID2D1Layer>			m_pLayer						;
@@ -200,7 +198,7 @@ public:
 		pd2dRenderTarget->FillRectangle(GetResizeRect() - m_ptWorld, m_hbrCaption.Get());
 	}
 
-	void Render(ID2D1RenderTarget* pd2dRenderTarget) override
+	void Draw(ID2D1RenderTarget* pd2dRenderTarget) override
 	{
 		if (m_bCaption) RenderCaption(pd2dRenderTarget);
 		pd2dRenderTarget->FillRectangle(m_rcClient, m_hbrBackground.Get());
@@ -213,29 +211,29 @@ public:
 
 	}
 
-	void BuildObject(string_hash hash, ID2D1Factory* pd2dFactory, IDWriteFactory* pdwFactory, IWICImagingFactory* pwicFactory, ID2D1DeviceContext* pd2dDeviceContext) override
+	void Build(std::string Tag, const shared_ptr<CIndRes>& indres, ID2D1RenderTarget* pd2dRenderTarget) override
 	{
-		Base::BuildObject(hash, pd2dFactory, pdwFactory, pwicFactory, pd2dDeviceContext);
-
-		pd2dDeviceContext->CreateSolidColorBrush(ColorF { ColorF::Black }, &m_hbrSample);
-		pd2dDeviceContext->CreateSolidColorBrush(ColorF { ColorF::BlanchedAlmond }, &m_hbrBackground);
-		pd2dDeviceContext->CreateSolidColorBrush(ColorF { ColorF::Crimson }, &m_hbrCaption);
-		// Create Text
-		ComPtr<IDWriteTextFormat> txtformat;
-		pdwFactory->CreateTextFormat(	  TEXT("consolas")
-										, nullptr
-										, DWRITE_FONT_WEIGHT_NORMAL
-										, DWRITE_FONT_STYLE_NORMAL
-										, DWRITE_FONT_STRETCH_NORMAL
-										, 12
-										, L"ko-kr"
-										, &txtformat
-		);
-
-		txtformat.As(&m_pdwTextFormat);
-		m_pdwTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-		m_pdwTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
-		pd2dDeviceContext->CreateLayer(&m_LayerCaption);
+//		Base::Build(Tag, indres, pd2dRenderTarget);
+//
+//		pd2dRenderTarget->CreateSolidColorBrush(ColorF { ColorF::Black }, &m_hbrSample);
+//		pd2dRenderTarget->CreateSolidColorBrush(ColorF { ColorF::BlanchedAlmond }, &m_hbrBackground);
+//		pd2dRenderTarget->CreateSolidColorBrush(ColorF { ColorF::Crimson }, &m_hbrCaption);
+//		// Create Text
+//		ComPtr<IDWriteTextFormat> txtformat;
+//		indres->dwFactory->CreateTextFormat(  TEXT("consolas")
+//											, nullptr
+//											, DWRITE_FONT_WEIGHT_NORMAL
+//											, DWRITE_FONT_STYLE_NORMAL
+//											, DWRITE_FONT_STRETCH_NORMAL
+//											, 12
+//											, L"ko-kr"
+//											, &txtformat
+//		);
+//
+//		txtformat.As(&m_pdwTextFormat);
+//		m_pdwTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+//		m_pdwTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
+//		pd2dRenderTarget->CreateLayer(&m_LayerCaption);
 	}
 
 protected:

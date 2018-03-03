@@ -104,9 +104,19 @@ bool CUIManager::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 //	return true;
 }
 
-CUIBase* CUIManager::find(string_hash hash)
+void CUIManager::Delete(std::string tag) 
+{ 
+	m_lstUI.remove_if(
+		[&](const auto& p) 
+		{ 
+			return p->GetTag() == tag; 
+		}
+	); 
+}
+
+CUIBase* CUIManager::find(std::string tag)
 {
-	auto res = find_if(m_lstUI.begin(), m_lstUI.end(), [&] (const auto& p) { return p->GetTag() == hash; });
+	auto res = find_if(m_lstUI.begin(), m_lstUI.end(), [&] (const auto& p) { return p->GetTag() == tag; });
 	return (res == end(m_lstUI) ? nullptr : res->get());
 }
 
@@ -121,13 +131,13 @@ bool CUIManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 	return(true);
 }
 
-void CUIManager::Render(ID2D1RenderTarget * pd2dRenderTarget)
+void CUIManager::Draw(ID2D1RenderTarget * pd2dRenderTarget)
 {
 	for (const auto& p : m_lstUI)
 	{
 		p->OnPrepareRender(pd2dRenderTarget);
 
-		p->Render(pd2dRenderTarget);
+		p->Draw(pd2dRenderTarget);
 		
 		p->OnFinishedRender(pd2dRenderTarget);
 	}
