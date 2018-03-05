@@ -13,7 +13,27 @@ CColorUI::~CColorUI()
 
 void CColorUI::Draw(ID2D1RenderTarget * pd2dRenderTarget)
 {
+	ComPtr<ID2D1SolidColorBrush> brush;
+	pd2dRenderTarget->CreateSolidColorBrush(ColorF{ ColorF::White, 1.f }, &brush);
+	pd2dRenderTarget->DrawRectangle(GetRect(UI_PROPERTY::Client) + RectF(-1, -1, 1, 1), brush.Get());
 	pd2dRenderTarget->DrawBitmap(m_pd2dbmpColors.Get(), GetRect(UI_PROPERTY::Client));
+}
+
+void CColorUI::OnPrepareRender(ID2D1RenderTarget * pd2dRenderTarget)
+{
+	auto sz = GetRelatedStartPosition();
+//	sz.width -= 1;
+//	sz.width -= 1;
+	auto rc = GetRelatedDrawableRect() + RectF(-1, -1, 1, 1);
+	pd2dRenderTarget->GetTransform(&m_mtxStoreLast);
+	pd2dRenderTarget->SetTransform(Matrix3x2F::Translation(sz));
+	pd2dRenderTarget->PushAxisAlignedClip(rc, D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
+}
+
+void CColorUI::OnFinishedRender(ID2D1RenderTarget * pd2dRenderTarget)
+{
+	pd2dRenderTarget->PopAxisAlignedClip();
+	pd2dRenderTarget->SetTransform(m_mtxStoreLast);
 }
 
 void CColorUI::Update(float fTimeElapsed)
@@ -35,7 +55,6 @@ void CColorUI::MakeColorField()
 	Color hsv{ m_SelectedColor->h };
 
 	// v val per step. [0.0, 1.0)
-	float val = 0.f;
 	float stepW = 1.f / static_cast<float>(width - 1);
 	float stepH = 1.f / static_cast<float>(height - 1);
 

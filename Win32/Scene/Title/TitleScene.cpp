@@ -3,6 +3,7 @@
 #include "Framework/Input/Input.h"
 
 #include "UI/ColorUI/ColorUI.h"
+#include "UI/System/CustomCaptionUI.h"
 
 #include "TitleScene.h"
 
@@ -18,7 +19,6 @@ bool CTitleScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 	return true;
 }
 
-#include <windowsx.h>
 bool CTitleScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	static bool bCapture = false;
@@ -30,9 +30,14 @@ bool CTitleScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 		if (!bCapture)
 			break;
 	case WM_LBUTTONUP:
-		m_Hvalue = max(min(256, 456 - HIWORD(lParam)), 0);
-		m_Hvalue = m_Hvalue / 256.f * 360.f;
-		if (m_Hvalue >= 360.f) m_Hvalue -= 360.f;
+		{
+			int startHeight = m_uiManager.find("Color"s)->GetRelatedStartPosition().height;
+			int palletHeight = m_uiManager.find("Color"s)->GetRect(UI_PROPERTY::Client).bottom;
+			m_SelectColor->h = std::max(std::min(palletHeight, ((startHeight + palletHeight) - GET_Y_LPARAM(lParam))), 0);
+			m_SelectColor->h = m_SelectColor->h / static_cast<float>(palletHeight) * 360.f;
+			if (m_SelectColor->h >= 360.f) m_SelectColor->h -= 360.f;
+			m_SelectColor.SetNotify();
+		}
 		break;
 	}
 	if (nMessageID == WM_LBUTTONUP) bCapture = false;
@@ -41,6 +46,8 @@ bool CTitleScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 
 bool CTitleScene::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
+	if (m_uiManager.OnProcessingWindowMessage(hWnd, nMessageID, wParam, lParam)) return true;
+
 	switch(nMessageID)
 	{
 	case WM_LBUTTONDOWN:
@@ -63,11 +70,18 @@ void CTitleScene::Build(std::string Tag, CDirectXFramework * pMasterFramework)
 	CScene::Build(Tag, pMasterFramework);
 	
 	auto pColorUI = make_unique<CColorUI>(&m_uiManager, m_SelectColor);
-	pColorUI->InitializeStartPosition(Point2F(0, 200));
-	pColorUI->InitializeClinet(RectF(0, 0, 256, 256));
+	pColorUI->InitializeStartPosition(Point2F(15, CaptionHeight + 15));
+	pColorUI->InitializeClinet(RectF(0, 0, 180, 180));
 	pColorUI->Build("Color"s, m_pIndRes, pMasterFramework->GetRenderTarget());
 
 	m_uiManager.Insert(move(pColorUI));
+
+	auto pCaptionUI = make_unique<CCustomCaptionUI>(&m_uiManager);
+	pCaptionUI->InitializeStartPosition(Point2F(0, 0));
+	pCaptionUI->InitializeClinet(RectF(0, 0, m_pMasterFramework->GetClientRect().right, CaptionHeight));
+	pCaptionUI->Build("Caption"s, m_pIndRes, pMasterFramework->GetRenderTarget());
+
+	m_uiManager.Insert(move(pCaptionUI));
 
 	BuildHSVPicker();
 }
@@ -103,41 +117,8 @@ void CTitleScene::AnimateObjects(float fTimeElapsed)
 
 void CTitleScene::Draw(ID2D1HwndRenderTarget * pd2dDeviceContext)
 {
-	ComPtr<ID2D1SolidColorBrush> hbr;
-	pd2dDeviceContext->CreateSolidColorBrush(ColorF{ ColorF::AliceBlue }, &hbr);
-
-	float angle = XMConvertToRadians(m_fTick * 270.f);
-	float x = 50 + cos(angle) * 25.f;
-	float y = 50 + sin(angle) * 25.f;
-//	pd2dDeviceContext->FillRectangle(RectF(x - 10.f, y - 10.f, x + 10.f, y + 10.f), hbr.Get());
-	ComPtr<ID2D1LinearGradientBrush> brush;
-	
-	ComPtr<ID2D1GradientStopCollection> pGradientStops;
-	D2D1_GRADIENT_STOP gradientStops[2];
-	gradientStops[0].color = D2D1::ColorF(D2D1::ColorF::Yellow, 1);
-	gradientStops[0].position = 0.0f;
-	gradientStops[1].color = D2D1::ColorF(D2D1::ColorF::ForestGreen, 1);
-	gradientStops[1].position = 1.0f;
-	pd2dDeviceContext->CreateGradientStopCollection(
-		gradientStops,
-		2,
-		D2D1_GAMMA_2_2,
-		D2D1_EXTEND_MODE_WRAP,
-		&pGradientStops
-	);
-
-	pd2dDeviceContext->CreateLinearGradientBrush(
-			LinearGradientBrushProperties(
-				Point2F(0, 0),
-				Point2F(150, 150)
-			)
-		,	pGradientStops.Get()
-		,	&brush
-	);
-
-	pd2dDeviceContext->FillRectangle(RectF(0, 0, 150, 150), brush.Get());
-
-	pd2dDeviceContext->DrawBitmap(m_pd2dbmpColorsPallet.Get(), RectF(260, 200, 270, 456));
+	pd2dDeviceContext->DrawBitmap(m_pd2dbmpColorsPallet.Get()
+		, RectF(220, CaptionHeight + 15, 230, CaptionHeight + 195));
 
 	m_uiManager.Draw(pd2dDeviceContext);
 }

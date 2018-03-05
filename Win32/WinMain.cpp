@@ -39,34 +39,33 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
-{
-    UNREFERENCED_PARAMETER(hPrevInstance);
-    UNREFERENCED_PARAMETER(lpCmdLine);
+{	
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // TODO: 여기에 코드를 입력합니다.
+	// TODO: 여기에 코드를 입력합니다.
 	timer = make_shared<CTimer>();
 	independentRes = make_shared<CDirect2DIndependentDeviceResource>();
 	if (!(independentRes->Initialize())) return FALSE;
 
-    // 전역 문자열을 초기화합니다.
-    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_WIN32, szWindowClass, MAX_LOADSTRING);
-    MyRegisterClass(hInstance);
+	// 전역 문자열을 초기화합니다.
+	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+	LoadStringW(hInstance, IDC_WIN32, szWindowClass, MAX_LOADSTRING);
+	MyRegisterClass(hInstance);
 
-    // 응용 프로그램 초기화를 수행합니다.
-    if (!InitInstance (hInstance, nCmdShow))
-    {
-        return FALSE;
-    }
+	// 응용 프로그램 초기화를 수행합니다.
+	if (!InitInstance(hInstance, nCmdShow))
+	{
+		return FALSE;
+	}
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WIN32));
+	HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WIN32));
 
-    MSG msg;
+	MSG msg;
 
-    // 기본 메시지 루프입니다.
-
-    while (true)
-    {
+	// 기본 메시지 루프입니다.
+	while (true)
+	{
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
@@ -82,10 +81,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			if (!timer->Update()) continue;
 			fwMain.FrameAdvance();
 		}
+	}
 
-    }
-
-    return (int) msg.wParam;
+//
+//	while (GetMessage(&msg, nullptr, 0, 0))
+//	{
+//		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+//		{
+//			TranslateMessage(&msg);
+//			DispatchMessage(&msg);
+//		}
+//	}
+//
+//
+	return (int)msg.wParam;
 }
 
 
@@ -97,23 +106,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-    WNDCLASSEXW wcex;
-
-    wcex.cbSize = sizeof(WNDCLASSEX);
-
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc    = CDirectXFramework::WndProc;
-    wcex.cbClsExtra     = 0;
-    wcex.cbWndExtra     = 0;
-    wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WIN32));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszMenuName   = NULL;
-    wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-    return RegisterClassExW(&wcex);
+	WNDCLASSEXW wcex;
+	
+	wcex.cbSize = sizeof(WNDCLASSEX);
+	
+	wcex.style          = CS_HREDRAW | CS_VREDRAW | CS_GLOBALCLASS;
+	wcex.lpfnWndProc    = CDirectXFramework::WndProc;
+	wcex.cbClsExtra     = 0;
+	wcex.cbWndExtra     = 0;
+	wcex.hInstance      = hInstance;
+	wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WIN32));
+	wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
+	wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW + 1);
+	wcex.lpszMenuName   = NULL;
+	wcex.lpszClassName  = szWindowClass;
+	wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	
+	return RegisterClassExW(&wcex);
 }
 
 //
@@ -130,22 +139,27 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 
 	//	윈도우 스타일
-	DWORD dwStyle = 0
-		| WS_OVERLAPPED 	// 디폴트 윈도우. 타이틀 바와 크기 조절이 안되는 경계선을 가진다. 아무런 스타일도 주지 않으면 이 스타일이 적용된다.
-		| WS_CAPTION 		// 타이틀 바를 가진 윈도우를 만들며 WS_BORDER 스타일을 포함한다.
+	DWORD dwStyle
+		= WS_OVERLAPPED 	// 디폴트 윈도우. 타이틀 바와 크기 조절이 안되는 경계선을 가진다. 아무런 스타일도 주지 않으면 이 스타일이 적용된다.
+//		| WS_CAPTION 		// 타이틀 바를 가진 윈도우를 만들며 WS_BORDER 스타일을 포함한다.
+		| WS_POPUP
+		| WS_BORDER			// 단선으로 된 경계선을 만들며 크기 조정은 할 수 없다.
 		| WS_SYSMENU		// 시스템 메뉴를 가진 윈도우를 만든다.
 		| WS_MINIMIZEBOX	// 최소화 버튼을 만든다.
-		| WS_BORDER			// 단선으로 된 경계선을 만들며 크기 조정은 할 수 없다.
-		| WS_THICKFRAME		// 크기 조정이 가능한 두꺼운 경계선을 가진다. WS_BORDER와 같이 사용할 수 없다.
+//		| WS_THICKFRAME		// 크기 조정이 가능한 두꺼운 경계선을 가진다. WS_BORDER와 같이 사용할 수 없다.
 		;					// 추가로 필요한 윈도우 스타일은 http://www.soen.kr/lecture/win32api/reference/Function/CreateWindow.htm 참고.
+
+	DWORD dwExStyle = 0
+		| WS_EX_TOPMOST
+		;
 
 	//	인스턴스 핸들을 전역 변수에 저장
 	hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
-
+	
 	//	데스크톱 윈도우 사이즈
 	RECT getWinSize;
 	GetWindowRect(GetDesktopWindow(), &getWinSize);
-
+	
 	//	클라이언트 사이즈
 	RECT rc;
 	rc.left = rc.top = 0;
@@ -153,19 +167,20 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	rc.bottom = CLIENT_HEIGHT;
 	//	윈도우 사이즈에 실제로 추가되는(캡션, 외곽선 등) 크기를 보정.
 	AdjustWindowRect(&rc, dwStyle, FALSE);
-
+	
 	g_iMarginWidth = rc.right - rc.left - CLIENT_WIDTH;
 	g_iMarginHeight = rc.bottom - rc.top - CLIENT_HEIGHT;
-
+	
 	//	클라이언트 절대좌표(left, top)
 	//	데스크톱의 중앙에 클라이언트가 위치하도록 설정
 	POINT ptClientWorld;
 	ptClientWorld.x = (getWinSize.right - CLIENT_WIDTH) / 2;
 	ptClientWorld.y = (getWinSize.bottom - CLIENT_HEIGHT) / 2;
-
+	
 	//	윈도우 생성
-	HWND hWnd = CreateWindow(
-		  szWindowClass			//	윈도우 클래스 명
+	HWND hWnd = CreateWindowEx(
+		  dwExStyle				//	확장 윈도우 스타일
+		, szWindowClass			//	윈도우 클래스 명
 		, szTitle				//	캡션 표시 문자열
 		, dwStyle				//	윈도우 스타일
 		, ptClientWorld.x		//	부모 윈도우 기반 윈도우 시작좌표 : x
@@ -177,7 +192,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		, hInstance				//	인스턴스 핸들
 		, NULL					//	추가 파라메터 : NULL
 		);
-
+	
 	//	생성 실패시 프로그램 종료
 	//	확인 : WndProc의 default msg handler가 DefWindowProc 함수를 반환하는가?
 	if (!hWnd)
@@ -196,8 +211,22 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		return FALSE;
 	}
 
-	timer->SetUpdateCaptionHwnd(hWnd);
+	// 블랜딩된 창으로
+//	auto ncPolicy = DWMNCRP_USEWINDOWSTYLE;
+//	DwmSetWindowAttribute(hWnd, DWMWA_NCRENDERING_POLICY, &ncPolicy, sizeof(ncPolicy));
 
+	// https://msdn.microsoft.com/ko-kr/library/aa969512.aspx
+//	MARGINS margins{ -1 };
+//	DwmExtendFrameIntoClientArea(hWnd, &margins);
+
+	// DWM_BLURBEHIND 구조를 생성하고 채웁니다.
+	// NOT WORK !!!!!!!!
+//	DWM_BLURBEHIND bb{ DWM_BB_ENABLE, TRUE, };
+//	auto hr = DwmEnableBlurBehindWindow(hWnd, &bb);
+//	if (FAILED(hr)) return FALSE;
+
+
+	timer->SetUpdateCaptionHwnd(hWnd);
 	fwMain.EquipTimer(timer);
 	fwMain.InjectIndependentResources(independentRes);
 
@@ -206,18 +235,18 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	fwMain.BuildScene([&] (CDirectXFramework *framework) -> unique_ptr<CScene>
 	{
 		auto pNewScene { make_unique<CTitleScene>() };
-
+	
 		pNewScene->Build("Title"s, framework);
-
+	
 		return pNewScene;
 	});
-
+	
 	fwMain.ChangeScene("Title"s);
 
 	//	윈도우 표시
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
-
+	
 	//	성공 반환
 	return TRUE;
 }

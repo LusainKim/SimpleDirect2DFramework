@@ -141,18 +141,18 @@ public:
 	// Direct2D Resource
 protected:
 
-	ComPtr<D2D_Factory>			m_pd2dFactory		{ nullptr }	;
+	ComPtr<D2D_Factory>		m_pd2dFactory		{ nullptr }	;
 
-	ComPtr<DWT_Factory>			m_pdwFactory		{ nullptr }	;
+	ComPtr<DWT_Factory>		m_pdwFactory		{ nullptr }	;
 	ComPtr<WIC_Factory>		m_wicFactory		{ nullptr }	;
 
-	bool							m_bInitializeCoInit	{ false }	;
+	bool					m_bInitializeCoInit	{ false }	;
 	
 public:
 
-	const ComPtr<D2D_Factory>			&	d2dFactory		{ m_pd2dFactory	 }	;
+	const ComPtr<D2D_Factory>	&	d2dFactory		{ m_pd2dFactory	 }	;
 
-	const ComPtr<DWT_Factory>		&	dwFactory		{ m_pdwFactory	 }	;
+	const ComPtr<DWT_Factory>	&	dwFactory		{ m_pdwFactory	 }	;
 	const ComPtr<WIC_Factory>	&	wicFactory		{ m_wicFactory	 }	;
 
 };

@@ -17,18 +17,8 @@ bool CUIManager::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 		m_ptCurrent = POINT { LOWORD(lParam), HIWORD(lParam) };
 
 		// seq 1: empty selected - select ui
-		if (!m_pSelectedUI)
-		{
-			auto pSelectedUI = std::find_if(begin(m_lstUI), end(m_lstUI) 
-				, [&](const unique_ptr<CUIBase>& p)
-				  { return p->PtInUI(m_ptCurrent); }
-			);
-			if (end(m_lstUI) == pSelectedUI)
-				m_pSelectedUI = pSelectedUI->get();
-		}
-		
 		// seq 2: If nothing is selected after seq 1, control is returned to the scene.
-		if (!m_pSelectedUI) return false;
+		if (!m_pSelectedUI && !SelectValidUI()) return false;
 		
 		if (m_pSelectedUI->PtInCaption(m_ptCurrent))
 		{
@@ -83,6 +73,31 @@ bool CUIManager::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 			if (!retval) return false;
 			else return m_pSelectedUI->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		}
+
+	case WM_RBUTTONDOWN:
+
+		m_ptCurrent = POINT{ LOWORD(lParam), HIWORD(lParam) };
+
+		// seq 1: empty selected - select ui
+		// seq 2: If nothing is selected after seq 1, control is returned to the scene.
+		if (!m_pSelectedUI && !SelectValidUI()) return false;
+		
+		if (m_pSelectedUI->PtInUI(m_ptCurrent))
+			return m_pSelectedUI->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+		// clear select
+		else
+		{
+			m_pSelectedUI = nullptr;
+			return false;
+		}
+		
+		break;
+
+	case WM_RBUTTONUP:
+		if (m_pSelectedUI)
+			return m_pSelectedUI->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+		return false;
+
 	default:
 		return false;
 	}
@@ -90,18 +105,48 @@ bool CUIManager::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 	return(true);
 }
 
+bool CUIManager::SelectValidUI()
+{
+	auto pSelectedUI = std::find_if(begin(m_lstUI), end(m_lstUI) 
+		, [&](const unique_ptr<CUIBase>& p)
+			{ return p->PtInUI(m_ptCurrent); }
+	);
+	if (end(m_lstUI) != pSelectedUI)
+	{
+		m_pSelectedUI = pSelectedUI->get();
+		return true;
+	}
+	return false;
+}
+
 bool CUIManager::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	return false;
-//	switch (nMessageID)
-//	{
-//	case WM_SIZE:
-//		break;
-//	default:
-//		return false;
-//	}
-//
-//	return true;
+	switch (nMessageID)
+	{
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+	case WM_MBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONUP:
+	case WM_MOUSEMOVE:
+	case WM_MOUSEWHEEL:
+		return OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+	case WM_CHAR:
+		return  OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+
+	case WM_SIZE:
+		for (auto& p : m_lstUI)
+			p->OnProcessingWindowMessage(hWnd, nMessageID, wParam, lParam);
+		return false;
+	default:
+		return false;
+	}
+
+	return true;
 }
 
 void CUIManager::Delete(std::string tag) 

@@ -46,6 +46,12 @@
     <Filter Include="UI\Color">
       <UniqueIdentifier>{16c73962-effa-426e-a4c1-9e531c73dad2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI\System">
+      <UniqueIdentifier>{5837ed24-5ce5-4f82-bade-7356da0d8406}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GetThemeData">
+      <UniqueIdentifier>{42bf1538-3bf4-4784-b58d-f3bc57bc8ce6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -141,6 +147,12 @@
     <ClInclude Include="header\Notifier.h">
       <Filter>헤더 파일\header</Filter>
     </ClInclude>
+    <ClInclude Include="UI\System\CustomCaptionUI.h">
+      <Filter>UI\System</Filter>
+    </ClInclude>
+    <ClInclude Include="header\GetThemeData.h">
+      <Filter>헤더 파일\GetThemeData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx\stdafx.cpp">
@@ -175,6 +187,12 @@
     </ClCompile>
     <ClCompile Include="UI\ColorUI\ColorUI.cpp">
       <Filter>UI\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\System\CustomCaptionUI.cpp">
+      <Filter>UI\System</Filter>
+    </ClCompile>
+    <ClCompile Include="header\GetThemeData.cpp">
+      <Filter>헤더 파일\GetThemeData</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

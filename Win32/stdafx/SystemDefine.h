@@ -2,23 +2,15 @@
 
 
 
-// xz 평면의 x
-constexpr size_t map_width	= 200;
-// xz 평면의 z
-constexpr size_t map_height = 200;
-// xy, yz 평면의 y
-constexpr size_t map_depth	= 10;
-
-// cube의 각 변의 너비의 반
-constexpr float	cubeScale = 0.25f;
+constexpr LONG CaptionHeight = 27;
 
 
 
-constexpr LONG CLIENT_WIDTH	 = 800;
-constexpr LONG CLIENT_HEIGHT = 600;
+constexpr LONG CLIENT_WIDTH	 = 600;
+constexpr LONG CLIENT_HEIGHT = 240;
 
 constexpr LONG CLIENT_MINIMUM_WIDTH	 = 600;
-constexpr LONG CLIENT_MINIMUM_HEIGHT = 480;
+constexpr LONG CLIENT_MINIMUM_HEIGHT = 240;
 
 
 
@@ -29,16 +21,16 @@ constexpr LONG CLIENT_MINIMUM_HEIGHT = 480;
 #define USE_LIMIT_MAX_FPS		 1
 #define USE_DEBUG_WINDOW		 0
 
-#define USE_EXTNED_TILE_FLAG	 1
-
 #if USE_CAPTIONFPS_ALWAYS
 #define SHOW_CAPTIONFPS 
 #elif _DEBUG	// Debug에서는 항상 실행
-#define SHOW_CAPTIONFPS 
+//	#define SHOW_CAPTIONFPS 
 #endif
 
 #if defined(SHOW_CAPTIONFPS)
 #define MAX_UPDATE_FPS 1.0 / 3.0
+#else
+#define MAX_UPDATE_FPS 0
 #endif
 
 // 최대 FPS
@@ -51,7 +43,7 @@ constexpr LONG CLIENT_MINIMUM_HEIGHT = 480;
 #define TITLE_MAX_LENGTH 64
 
 #if USE_TITLE_STRING
-#define TITLESTRING	TEXT("Lab Project")
+#define TITLESTRING	TEXT("Color Picker")
 #endif
 
 #define DEBUG_CLIENT_WIDTH	400

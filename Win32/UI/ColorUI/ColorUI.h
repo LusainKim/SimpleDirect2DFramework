@@ -16,7 +16,8 @@ public:
 	virtual ~CColorUI();
 
 	void Draw(ID2D1RenderTarget* pd2dRenderTarget) override;
-
+	void OnPrepareRender(ID2D1RenderTarget* pd2dRenderTarget) override;
+	void OnFinishedRender(ID2D1RenderTarget* pd2dRenderTarget) override;
 	void Update(float fTimeElapsed) override;
 	void MakeColorField();
 	void Build(std::string Tag, const shared_ptr<CIndRes>& indres, ID2D1RenderTarget* pd2dRenderTarget) override;
