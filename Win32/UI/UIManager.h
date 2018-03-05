@@ -11,13 +11,14 @@ public:
 	~CUIManager() = default;
 
 	void Insert(unique_ptr<CUIBase>&& ui) { m_lstUI.push_back(move(ui)); }
-	void Delete(string_hash hash) { m_lstUI.remove_if([&] (const auto& p) { return p->GetTag() == hash; }); }
-	CUIBase* find(string_hash hash);
+	void Delete(std::string tag);
+	CUIBase* find(std::string tag);
 	virtual bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	virtual bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	bool SelectValidUI();
 	virtual bool OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
-	void Render(ID2D1RenderTarget* pd2dRenderTarget);
+	void Draw(ID2D1RenderTarget* pd2dRenderTarget);
 	void Update(float fTimeElapsed);
 
 	CScene* GetSceneInfo() const { return m_pScene; }
