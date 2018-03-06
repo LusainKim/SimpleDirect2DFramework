@@ -32,4 +32,7 @@ protected:
 	ComPtr<ID2D1Bitmap>				m_pd2dbmpIcon;
 	ComPtr<IDWriteTextFormat>		m_tfCaption;
 	ComPtr<IDWriteTextLayout>		m_tlCaption;
+
+	float							m_fIconSize;
+	D2D_RECT_F						m_rcIcon;
 };

@@ -2,7 +2,7 @@
 
 
 
-constexpr LONG CaptionHeight = 27;
+inline LONG CaptionHeight;
 
 
 

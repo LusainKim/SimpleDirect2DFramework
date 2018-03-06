@@ -167,7 +167,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	rc.bottom = CLIENT_HEIGHT;
 	//	윈도우 사이즈에 실제로 추가되는(캡션, 외곽선 등) 크기를 보정.
 	AdjustWindowRect(&rc, dwStyle, FALSE);
-	
+
 	g_iMarginWidth = rc.right - rc.left - CLIENT_WIDTH;
 	g_iMarginHeight = rc.bottom - rc.top - CLIENT_HEIGHT;
 	
@@ -225,6 +225,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //	auto hr = DwmEnableBlurBehindWindow(hWnd, &bb);
 //	if (FAILED(hr)) return FALSE;
 
+	SetRect(&rc, 0, 0, 0, 0);
+	AdjustWindowRect(&rc, WS_CAPTION, FALSE);
+	CaptionHeight = -rc.top;
 
 	timer->SetUpdateCaptionHwnd(hWnd);
 	fwMain.EquipTimer(timer);

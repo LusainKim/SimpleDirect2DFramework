@@ -13,9 +13,10 @@ CCustomCaptionUI::~CCustomCaptionUI()
 
 void CCustomCaptionUI::Draw(ID2D1RenderTarget * pd2dRenderTarget)
 {
-	auto rcIcon = RectF(0, 0, 16, 16) + Point2F(8, 6);
+	
+	
 	pd2dRenderTarget->FillRectangle(GetRect(UI_PROPERTY::Client), m_pd2dsbrBackground.Get());
-	pd2dRenderTarget->DrawBitmap(m_pd2dbmpIcon.Get(), rcIcon);
+	pd2dRenderTarget->DrawBitmap(m_pd2dbmpIcon.Get(), m_rcIcon);
 	pd2dRenderTarget->DrawTextLayout(
 		  Point2F(28, 5)
 		, m_tlCaption.Get()
@@ -59,24 +60,18 @@ void CCustomCaptionUI::Build(std::string Tag, const shared_ptr<CIndRes>& indres,
 	pd2dRenderTarget->CreateSolidColorBrush(captionColor, &m_pd2dsbrBackground);
 	pd2dRenderTarget->CreateSolidColorBrush(captionTextColor, &m_pd2dsbrCaptionText);
 
-	// Load Icon
-	ComPtr<IWICBitmap> wicBmp;
-	auto hIcon = LoadIcon(GetHInstance(), MAKEINTRESOURCE(IDI_WIN32));
-	indres->wicFactory->CreateBitmapFromHICON(hIcon, &wicBmp);
 	
-	ComPtr<IWICFormatConverter> wicFormatConverter;
-	indres->wicFactory->CreateFormatConverter(&wicFormatConverter);
-	wicFormatConverter->Initialize(
-		  wicBmp.Get()
-		, GUID_WICPixelFormat32bppPBGRA
-		, WICBitmapDitherTypeNone
-		, nullptr
-		, 0.f
-		, WICBitmapPaletteTypeMedianCut
-	);
 
-	pd2dRenderTarget->CreateBitmapFromWicBitmap(wicFormatConverter.Get(), &m_pd2dbmpIcon);
-	DeleteObject(hIcon);
+	// Load Icon
+	m_pd2dbmpIcon = LoadFromIcon(
+		  indres->wicFactory.Get()
+		, pd2dRenderTarget
+		, GetHInstance()
+		, MAKEINTRESOURCE(IDI_WIN32)
+	);
+	
+	m_fIconSize = GetSystemMetrics(SM_CYSMICON);
+	m_rcIcon = RectF(0, 0, m_fIconSize, m_fIconSize) + Point2F(8, 6);
 
 	indres->dwFactory->CreateTextFormat(
 		  GetCaptionFontName().c_str()
