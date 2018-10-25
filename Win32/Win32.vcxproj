@@ -161,7 +161,6 @@
     <ClInclude Include="header\CreateHwndRenderTarget.h" />
     <ClInclude Include="header\D2D_Operator.h" />
     <ClInclude Include="header\FixValue.h" />
-    <ClInclude Include="header\IO.h" />
     <ClInclude Include="header\LoadD2DBitmap.h" />
     <ClInclude Include="header\LusWrite.h" />
     <ClInclude Include="header\MakeFullscreen.h" />
